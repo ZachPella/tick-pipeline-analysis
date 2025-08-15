@@ -8,7 +8,7 @@
 #SBATCH --ntasks=1
 
 WORKDIR=/work/fauverlab/zachpella/scripts_ticksJune2025/genotyping
-SUBSETVCF=100Ksubset.cohort_ticks_june2025_combined
+SUBSETVCF=100Ksubset_before.cohort_ticks_june2025_combined
 
 cd ${WORKDIR}
 
