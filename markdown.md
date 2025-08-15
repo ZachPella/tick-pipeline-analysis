@@ -1352,7 +1352,7 @@ This step completes the technical quality control phase of the pipeline, transfo
 ### Step 14b: Dataset Characterization via Downsampling
 **Script**: `downsample_to_100k_after_filtering.sh`  
 **Tools**: bcftools, vcflib  
-**Runtime**: 3 days, single job, 50GB memory  
+**Runtime**: 1 hour, single job, 50GB memory  
 
 #### Purpose and Context
 This exploratory step randomly downsamples the high-quality variant dataset to approximately 100,000 sites to enable rapid characterization of dataset properties before applying population-level filters. By analyzing a representative subset, we can efficiently evaluate variant quality distributions, allele frequencies, and missingness patterns to inform optimal filtering parameters for Step 15.
@@ -1368,7 +1368,7 @@ Uses `vcfrandomsample` with a sampling rate of 0.00037 to achieve approximately 
 ### Step 14c: Population Parameter Optimization Analysis
 **Scripts**: `after_downsample_for_summary_VCF_R_plots.sh` + `VCF_R_100k_plots_before_filtering.sh`  
 **Tools**: VCFtools, R (tidyverse)  
-**Runtime**: 10 hours + 1 hour, statistical analysis and visualization  
+**Runtime**: 1 hour + 1 second, statistical analysis and visualization  
 
 #### Purpose and Context
 This step performs comprehensive statistical analysis of the downsampled dataset to characterize variant quality distributions, depth patterns, missingness rates, and allele frequency spectra. The analysis generates publication-quality visualizations and summary statistics that inform optimal filtering thresholds for population-level analysis.
