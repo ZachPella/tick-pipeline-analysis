@@ -1356,7 +1356,7 @@ This step completes the technical quality control phase of the pipeline, transfo
 ### Step 14b: Pre-Filter Dataset Characterization
 **Script**: `downsample_to_100k_before_filtering.sh`  
 **Tools**: bcftools, vcflib  
-**Runtime**: 3 days, single job, 50GB memory  
+**Runtime**: 1 hours, single job, 50GB memory  
 
 #### Purpose and Context
 This step creates a representative subset of the raw, unfiltered variant dataset to establish baseline characteristics before applying quality filters. By downsampling the complete population VCF to approximately 100,000 sites, we can efficiently analyze the full spectrum of variant quality distributions, including low-quality variants that will be removed in subsequent filtering steps.
@@ -1373,10 +1373,10 @@ Takes the complete population VCF from Step 11:
 
 ---
 
-### Step 14c: Post-Filter Dataset Characterization  
+### Step 14b: Post-Filter Dataset Characterization  
 **Script**: `downsample_to_100k_after_filtering.sh`  
 **Tools**: bcftools, vcflib  
-**Runtime**: 3 days, single job, 50GB memory  
+**Runtime**: 1 hour, single job, 50GB memory  
 
 #### Purpose and Context
 This step creates a representative subset of the high-quality, filtered variant dataset to assess the effectiveness of quality filtering and characterize the final data properties. By downsampling the PASS-only variants, we can evaluate how filtering has improved data quality and inform population-level filtering parameters.
@@ -1393,10 +1393,10 @@ Takes high-quality variants from Step 14:
 
 ---
 
-### Step 14d: Comparative Dataset Analysis
+### Step 14c: Comparative Dataset Analysis
 **Scripts**: `after_downsample_before_filtering_for_summary_VCF_R_plots.sh`, `after_downsample_after_filtering_for_summary_VCF_plots.sh`, `VCF_R_100k_before_filtering.sh`, `VCF_R_100k_after_filtering.sh`  
 **Tools**: VCFtools, R (tidyverse)  
-**Runtime**: 10 hours + 1 hour each, statistical analysis and visualization  
+**Runtime**: 1 hour, statistical analysis and visualization  
 
 #### Purpose and Context
 This comprehensive analysis pipeline performs parallel statistical characterization of both pre-filter and post-filter datasets, generating comparative visualizations that demonstrate the effectiveness of quality filtering and inform population-level parameter optimization.
@@ -1560,7 +1560,7 @@ This step completes the transition from technical quality control to biological 
 ### Step 16: Population Structure Analysis
 **Script**: `analysis_01_plink.sh`  
 **Tools**: PLINK v1.90, PLINK2  
-**Runtime**: 1 second, single job, 12 CPUs, 90GB memory  
+**Runtime**: 1 hour, single job, 12 CPUs, 90GB memory  
 
 #### Purpose and Context
 This step converts the population-optimized VCF dataset to PLINK binary format and performs Principal Component Analysis (PCA) to reveal population structure and genetic relationships among the 61 tick samples. PCA is the gold standard method for population structure analysis, transforming the high-dimensional genetic data into interpretable components that capture the major axes of genetic variation. This analysis represents the culmination of the entire pipeline, revealing the underlying population genetic patterns in the tick dataset.
