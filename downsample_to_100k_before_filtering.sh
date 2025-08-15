@@ -28,8 +28,8 @@ echo "Downsampling joint VCF to ~100K variants..."
 bcftools view ${MERGEDVCFNAME}.vcf.gz | vcfrandomsample -r 0.00037 > 100Ksubset_before.${MERGEDVCFNAME}.vcf
 
 echo "Gzipping & indexing downsampled VCF..."
-bgzip 100Ksubset.${MERGEDVCFNAME}.vcf
-bcftools index 100Ksubset.${MERGEDVCFNAME}.vcf.gz
+bgzip 100Ksubset_before.${MERGEDVCFNAME}.vcf
+bcftools index 100Ksubset_before.${MERGEDVCFNAME}.vcf.gz
 
 echo "No. sites in downsampled VCF:"
-bcftools view -H 100Ksubset.${MERGEDVCFNAME}.vcf.gz | wc -l
+bcftools view -H 100Ksubset_before.${MERGEDVCFNAME}.vcf.gz | wc -l
