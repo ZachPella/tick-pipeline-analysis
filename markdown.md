@@ -24,8 +24,9 @@
   - [Step 17: Advanced PCA Visualization and Population Analysis](#step-17-advanced-pca-visualization-and-population-analysis)
 - [Pipeline Completion Summary](#pipeline-completion-summary)
 
+<img width="801" height="661" alt="pipeline_diagram" src="https://github.com/user-attachments/assets/48d4232f-e170-4801-8b2c-934666759661" />
+
 ---
-<img width="801" height="661" alt="pipeline_diagram" src="https://github.com/user-attachments/assets/ba4e5a44-a217-4e14-aefb-d2bbe241e8e6" />
 
 ## Pipeline Overview
 
@@ -1350,57 +1351,92 @@ This step completes the technical quality control phase of the pipeline, transfo
 
 ---
 
-### Step 14b: Dataset Characterization via Downsampling
-**Script**: `downsample_to_100k_after_filtering.sh`  
+### Step 14b: Pre-Filter Dataset Characterization
+**Script**: `downsample_to_100k_before_filtering.sh`  
 **Tools**: bcftools, vcflib  
-**Runtime**: 1 hour, single job, 50GB memory  
+**Runtime**: 3 days, single job, 50GB memory  
 
 #### Purpose and Context
-This exploratory step randomly downsamples the high-quality variant dataset to approximately 100,000 sites to enable rapid characterization of dataset properties before applying population-level filters. By analyzing a representative subset, we can efficiently evaluate variant quality distributions, allele frequencies, and missingness patterns to inform optimal filtering parameters for Step 15.
+This step creates a representative subset of the raw, unfiltered variant dataset to establish baseline characteristics before applying quality filters. By downsampling the complete population VCF to approximately 100,000 sites, we can efficiently analyze the full spectrum of variant quality distributions, including low-quality variants that will be removed in subsequent filtering steps.
 
 #### Technical Implementation
-Uses `vcfrandomsample` with a sampling rate of 0.00037 to achieve approximately 100k variants from the full dataset. This provides a statistically representative sample while dramatically reducing computational requirements for exploratory analysis.
+Uses `vcfrandomsample` with a sampling rate of 0.00037 to achieve approximately 100k variants from the complete joint-called dataset. This provides a statistically representative sample of all variants, including those that would fail quality filters, enabling comprehensive assessment of the unfiltered data landscape.
+
+#### Input Data Structure
+Takes the complete population VCF from Step 11:
+- `cohort_ticks_june2025_final.vcf.gz` (unfiltered joint-called variants)
 
 #### Output Structure
-- `100Ksubset_after.cohort_ticks_june2025_snps_filtered_only.vcf.gz` (downsampled variant set)
+- `100Ksubset_before.cohort_ticks_june2025_final.vcf.gz` (pre-filter representative sample)
 
 ---
 
-### Step 14c: Population Parameter Optimization Analysis
-**Scripts**: `after_downsample_for_summary_VCF_R_plots.sh` + `VCF_R_100k_plots_before_filtering.sh`  
-**Tools**: VCFtools, R (tidyverse)  
-**Runtime**: 1 hour + 1 second, statistical analysis and visualization  
+### Step 14c: Post-Filter Dataset Characterization  
+**Script**: `downsample_to_100k_after_filtering.sh`  
+**Tools**: bcftools, vcflib  
+**Runtime**: 3 days, single job, 50GB memory  
 
 #### Purpose and Context
-This step performs comprehensive statistical analysis of the downsampled dataset to characterize variant quality distributions, depth patterns, missingness rates, and allele frequency spectra. The analysis generates publication-quality visualizations and summary statistics that inform optimal filtering thresholds for population-level analysis.
+This step creates a representative subset of the high-quality, filtered variant dataset to assess the effectiveness of quality filtering and characterize the final data properties. By downsampling the PASS-only variants, we can evaluate how filtering has improved data quality and inform population-level filtering parameters.
 
-#### Analytical Components
-The analysis pipeline generates multiple key assessments:
+#### Technical Implementation
+Uses the same `vcfrandomsample` approach on the quality-filtered dataset, enabling direct comparison with the pre-filter analysis to quantify the impact of GATK hard filtering on variant quality distributions.
 
-**Variant Quality Assessment**: Quality score distributions to evaluate overall variant confidence and identify appropriate quality thresholds.
+#### Input Data Structure
+Takes high-quality variants from Step 14:
+- `cohort_ticks_june2025_snps_passing_only.vcf.gz` (GATK-filtered variants)
 
-**Depth Analysis**: Mean depth per site and per individual to assess coverage uniformity and identify optimal depth filtering parameters.
+#### Output Structure
+- `100Ksubset_after.cohort_ticks_june2025_snps_passing_only.vcf.gz` (post-filter representative sample)
 
-**Missingness Evaluation**: Site-level and individual-level missingness patterns to determine appropriate completeness thresholds.
+---
 
-**Allele Frequency Characterization**: Minor allele frequency spectrum analysis to inform MAF filtering decisions.
+### Step 14d: Comparative Dataset Analysis
+**Scripts**: `after_downsample_before_filtering_for_summary_VCF_R_plots.sh`, `after_downsample_after_filtering_for_summary_VCF_plots.sh`, `VCF_R_100k_before_filtering.sh`, `VCF_R_100k_after_filtering.sh`  
+**Tools**: VCFtools, R (tidyverse)  
+**Runtime**: 10 hours + 1 hour each, statistical analysis and visualization  
 
-**Individual-Level Metrics**: Per-sample depth, missingness, and heterozygosity to identify problematic samples and assess population genetic parameters.
+#### Purpose and Context
+This comprehensive analysis pipeline performs parallel statistical characterization of both pre-filter and post-filter datasets, generating comparative visualizations that demonstrate the effectiveness of quality filtering and inform population-level parameter optimization.
 
-#### Statistical Outputs Generated
-- **Quality distribution plots**: Variant quality score density plots
-- **Depth analysis**: Site and individual depth distributions with summary statistics
-- **Missingness assessment**: Site and individual missingness histograms
-- **MAF spectrum**: Minor allele frequency density plots
-- **Heterozygosity analysis**: Individual inbreeding coefficients and heterozygosity metrics
+#### Before/After Analysis Workflow
+The analysis includes two parallel tracks:
+
+**Pre-Filter Analysis Track**:
+1. **VCFtools statistics** (`after_downsample_before_filtering_for_summary_VCF_R_plots.sh`) on `100Ksubset_before.cohort_ticks_june2025_final.vcf.gz`
+2. **R visualization** (`VCF_R_100k_before_filtering.sh`) generating blue-colored plots with "Before" labels
+
+**Post-Filter Analysis Track**:
+1. **VCFtools statistics** (`after_downsample_after_filtering_for_summary_VCF_plots.sh`) on `100Ksubset_after.cohort_ticks_june2025_snps_filtered_only.vcf.gz`
+2. **R visualization** (`VCF_R_100k_after_filtering.sh`) generating orange-colored plots with "After" labels
+
+#### Analytical Components Generated
+Both analysis tracks produce comprehensive assessments:
+
+**Variant Quality Metrics**: Distribution of variant confidence scores, demonstrating filtering effectiveness in removing low-confidence calls.
+
+**Depth Analysis**: Site-level and individual-level coverage patterns, showing how filtering affects coverage uniformity and identifies optimal depth parameters.
+
+**Missingness Assessment**: Before/after comparison of data completeness, crucial for determining appropriate missingness thresholds for population filtering.
+
+**Allele Frequency Characterization**: MAF spectrum analysis comparing filtered vs. unfiltered datasets, informing population-level MAF filtering decisions.
+
+**Individual-Level Quality**: Per-sample metrics including heterozygosity, inbreeding coefficients, and data completeness across the filtering process.
+
+#### Comparative Visualization Outputs
+- **Quality improvement plots**: Side-by-side comparison of variant quality distributions
+- **Filtering effectiveness assessment**: Quantification of variants removed and quality gains achieved
+- **Parameter optimization guidance**: Data-driven recommendations for population filtering thresholds
+- **Publication-ready figures**: Professional comparative visualizations demonstrating pipeline effectiveness
 
 #### Integration with Population Filtering
-The comprehensive statistics and visualizations from this analysis directly inform the filtering parameter selection in Step 15, ensuring that:
-- MAF thresholds balance variant retention with statistical power
-- Missingness cutoffs maintain data quality while preserving sample representation
-- Depth filters remove outliers while retaining biologically meaningful variation
+The comprehensive before/after analysis directly informs Step 15 parameter selection by:
+- **Quantifying filtering impact**: Demonstrating improvement in data quality metrics
+- **Optimizing MAF thresholds**: Showing how different MAF cutoffs would affect the filtered dataset
+- **Informing missingness parameters**: Revealing optimal completeness requirements based on actual data patterns
+- **Validating filtering effectiveness**: Confirming that GATK hard filters successfully improved dataset quality
 
-This data-driven approach to parameter optimization ensures that population-level filtering is tailored to the specific characteristics of the tick dataset rather than relying on generic thresholds.
+This data-driven approach ensures that subsequent population-level filtering (Step 15) uses parameters optimized for the specific characteristics of the tick dataset rather than generic thresholds, maximizing both data quality and variant retention for robust population genetic analysis.
 
 ---
 
