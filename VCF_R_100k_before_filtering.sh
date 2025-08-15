@@ -11,7 +11,7 @@
 # --- Set Working Directory and Variables ---
 WORKDIR=/work/fauverlab/zachpella/scripts_ticksJune2025_10_scatter/genotyping
 # Updated to use the output from your "before filtering" VCFtools script
-OUTPUT_PREFIX="out.100Ksubset_before.cohort_ticks_june2025_combined"
+OUTPUT_PREFIX="out.100Ksubset_before.cohort_ticks_june2025_final"
 R_SCRIPT_FILE="vcf_plots_before_temp_${SLURM_JOB_ID}.R"
 
 # Change to the working directory
