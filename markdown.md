@@ -35,6 +35,8 @@ This pipeline processes 61 tick samples through a comprehensive genomics workflo
 
 **Dataset**: NovaSeq sequencing data from 61 *Ixodes scapularis* samples
 **Output Goal**: Population structure analysis via PCA and genetic diversity metrics
+<img width="801" height="661" alt="pipeline_diagram" src="https://github.com/user-attachments/assets/48d4232f-e170-4801-8b2c-934666759661" />
+
 ---
 
 ## Preprocessing Steps (1-8)
