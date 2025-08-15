@@ -28,12 +28,12 @@
 
 ## Pipeline Overview
 
-This pipeline processes 61 tick samples (plus 1 negative control) through a comprehensive genomics workflow covering:
+This pipeline processes 61 tick samples through a comprehensive genomics workflow covering:
 1. **Preprocessing (Steps 1-8)**: Raw read processing, quality control, alignment, and preparation
 2. **Variant Calling (Steps 9-11)**: GATK-based variant discovery and joint genotyping
 3. **Filtering & Analysis (Steps 12-17)**: Post-processing, filtering, and population genetic analysis
 
-**Dataset**: NovaSeq sequencing data from 61 *Ixodes scapularis* samples (plus 1 negative control)
+**Dataset**: NovaSeq sequencing data from 61 *Ixodes scapularis* samples
 **Output Goal**: Population structure analysis via PCA and genetic diversity metrics
 
 ---
@@ -43,7 +43,7 @@ This pipeline processes 61 tick samples (plus 1 negative control) through a comp
 ### Step 1: Lane Concatenation
 **Script**: `preprocess_01_concatenate.sh`  
 **Tools**: bash commands  
-**Runtime**: 30 seconds, 62 parallel jobs (61 samples + 1 negative control)  
+**Runtime**: 30 seconds, 61 parallel jobs  
 
 #### Purpose and Context
 This script addresses a common sequencing scenario where individual samples were sequenced across multiple lanes of the same sequencing run to increase coverage depth or optimize sequencing performance. Each tick sample was sequenced on two lanes (L001 and L002) of a NovaSeq run, requiring consolidation before downstream processing.
@@ -52,7 +52,7 @@ This script addresses a common sequencing scenario where individual samples were
 When samples are sequenced across multiple lanes, you get separate FASTQ files for each lane containing reads from the same DNA library. These represent identical genetic material processed through different physical lanes of the sequencer. The reads in L001 and L002 files sample the same underlying tick genome - they're technical replicates from the sequencing process rather than biological replicates.
 
 #### Input Data Structure
-For each of the 61 tick samples (plus negative control), the script expects four separate files:
+For each of the 61 tick samples, the script expects four separate files:
 - `SAMPLE_L001_R1_*.fastq.gz` (forward reads from lane 1)  
 - `SAMPLE_L001_R2_*.fastq.gz` (reverse reads from lane 1)
 - `SAMPLE_L002_R1_*.fastq.gz` (forward reads from lane 2)
@@ -156,7 +156,7 @@ This cleaned, high-quality read data serves as optimal input for the subsequent 
 ### Step 3: Post-Cleaning Quality Assessment
 **Script**: `preprocess_03_qc_fastqc.sh`  
 **Tools**: FastQC v0.12  
-**Runtime**: 1 minute, 62 parallel jobs (61 samples + 1 negative control), 4 threads each  
+**Runtime**: 1 minute, 61 parallel jobs, 4 threads each  
 
 #### Purpose and Context
 This step provides comprehensive quality assessment of the fastp-cleaned reads to verify that the trimming and filtering process was effective. While fastp performs quality control, FastQC provides detailed diagnostic reports that allow visual inspection of read quality metrics and identification of any remaining issues before proceeding to genome alignment.
@@ -231,7 +231,7 @@ The FastQC reports provide the final quality checkpoint before proceeding to the
 ### Step 4: Genome Alignment
 **Script**: `preprocess_04_align_bwa.sh`  
 **Tools**: BWA-MEM  
-**Runtime**: 13 hours, 62 parallel jobs (61 samples + 1 negative control), 4 threads each, 45GB memory  
+**Runtime**: 13 hours, 61 parallel jobs, 4 threads each, 45GB memory  
 
 #### Purpose and Context
 This step performs the core genomic alignment, mapping the cleaned sequencing reads to the *Ixodes scapularis* reference genome. This is the most computationally intensive preprocessing step, transforming millions of short DNA sequences into genomic coordinates that reveal where each read originated in the tick genome. The alignment results form the foundation for all subsequent variant calling and population genetic analyses.
@@ -310,7 +310,7 @@ The SAM files generated in this step contain the complete alignment information 
 ### Step 5: SAM to BAM Conversion and Sorting
 **Script**: `preprocess_05_sam_to_bam.sh`  
 **Tools**: samtools v1.19  
-**Runtime**: 1 hour, 62 parallel jobs (61 samples + 1 negative control), 2 threads each, 32GB memory  
+**Runtime**: 1 hour, 61 parallel jobs, 2 threads each, 32GB memory  
 
 #### Purpose and Context
 This step converts the text-based SAM alignment files to the binary BAM format and performs coordinate-based sorting. While SAM files are human-readable, they are inefficient for computational processing. BAM files provide the same information in a compressed, indexed format that enables rapid access and analysis. Additionally, this step generates comprehensive alignment statistics that are crucial for quality assessment.
@@ -411,7 +411,7 @@ The sorted BAM files and comprehensive statistics generated in this step provide
 ### Step 6: Read Group Addition
 **Script**: `preprocess_06_add_readgroups.sh`  
 **Tools**: Picard AddOrReplaceReadGroups, samtools v1.19  
-**Runtime**: 25 minutes, 62 parallel jobs (61 samples + 1 negative control), 35GB memory  
+**Runtime**: 25 minutes, 61 parallel jobs, 35GB memory  
 
 #### Purpose and Context
 This step adds essential metadata (read groups) to each BAM file that identifies the source, library preparation, and sequencing details for every read. Read groups are mandatory for GATK variant calling tools and enable proper handling of technical artifacts, batch effects, and multi-sample analysis. Without proper read group information, GATK will reject the BAM files in subsequent variant calling steps.
@@ -502,7 +502,7 @@ The read group-annotated BAM files generated in this step are now properly forma
 ### Step 7: Duplicate Removal
 **Script**: `preprocess_07_dedup.sh`  
 **Tools**: Picard MarkDuplicates, samtools v1.19  
-**Runtime**: 30 minutes, 62 parallel jobs (61 samples + 1 negative control), 35GB memory  
+**Runtime**: 30 minutes, 61 parallel jobs, 35GB memory  
 
 #### Purpose and Context
 This step identifies and removes PCR duplicate reads that artificially inflate coverage at specific genomic positions. PCR duplicates arise during library preparation when the same DNA template molecule is amplified multiple times, creating multiple sequencing reads that represent the same original genomic location. Removing these duplicates is essential for accurate variant calling, as they can create false signals that bias variant frequency estimates and quality scores.
@@ -712,7 +712,7 @@ This comprehensive summary provides the critical quality assessment needed befor
 ### Step 9: Individual Sample Variant Calling
 **Script**: `variant_01_haplotypecaller.sh`  
 **Tools**: GATK4 v4.6 HaplotypeCaller  
-**Runtime**: 10 hours, 61 parallel jobs (excluding negative control), 20 CPUs each, 110GB memory  
+**Runtime**: 10 hours, 61 parallel jobs, 20 CPUs each, 110GB memory  
 
 #### Purpose and Context
 This step performs the core variant discovery process, identifying SNPs and small indels in each tick sample individually using GATK's HaplotypeCaller algorithm. Rather than calling variants across all samples simultaneously, this approach first generates comprehensive variant data for each sample in GVCF (Genomic Variant Call Format) files. The GVCF format captures both variant and non-variant sites with confidence information, enabling sophisticated joint genotyping in subsequent steps.
