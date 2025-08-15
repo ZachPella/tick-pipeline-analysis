@@ -16,7 +16,7 @@ echo "Run date: ${RUN_DATE}"
 printf "\n"
 
 WORKDIR=/work/fauverlab/zachpella/scripts_ticksJune2025_10_scatter/genotyping
-MERGEDVCFNAME=cohort_ticks_june2025_snps_filtered_only
+MERGEDVCFNAME=cohort_ticks_june2025_snps_passing_only
 
 module purge
 module load bcftools
