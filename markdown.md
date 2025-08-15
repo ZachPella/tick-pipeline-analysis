@@ -38,8 +38,7 @@ This pipeline processes 61 tick samples through a comprehensive genomics workflo
 
 
 
-<img width="801" height="661" alt="pipeline_diagram" src="https://github.com/user-attachments/assets/48d4232f-e170-4801-8b2c-934666759661" />
-
+<img width="801" height="661" alt="pipeline_diagram" src="https://github.com/user-attachments/assets/f11c1b42-fd5a-41bf-b45a-118bb8a1a209" />
 ---
 
 ## Preprocessing Steps (1-8)
