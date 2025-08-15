@@ -93,7 +93,7 @@ This creates a clean, standardized input format for the subsequent quality contr
 ### Step 2: Quality Control and Read Trimming
 **Script**: `preprocess_02_qc_fastp.sh`  
 **Tools**: fastp  
-**Runtime**: 6 hours, 62 parallel jobs  
+**Runtime**: 1 hour, 61 parallel jobs  
 
 #### Purpose and Context
 This step performs comprehensive quality control on the concatenated raw sequencing reads. After combining lane data in Step 1, we now need to assess and improve read quality by removing low-quality bases, adapter sequences, and reads that don't meet minimum quality standards. This is critical for accurate downstream alignment and variant calling.
