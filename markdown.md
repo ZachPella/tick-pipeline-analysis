@@ -85,7 +85,7 @@ This creates a clean, standardized input format for the subsequent quality contr
 - Script includes robust error checking for missing files
 - Verifies successful output file creation
 - Provides detailed logging for troubleshooting
-- Uses SLURM array jobs for efficient parallel processing of all 62 samples
+- Uses SLURM array jobs for efficient parallel processing of all 61 samples
 
 ---
 
@@ -168,7 +168,7 @@ This step provides comprehensive quality assessment of the fastp-cleaned reads t
 After fastp processing, it's essential to verify that:
 - Quality trimming was effective and reads now meet alignment standards
 - No systematic biases were introduced during processing
-- Read quality is consistent across all 62 tick samples
+- Read quality is consistent across all 61 tick samples
 - Any remaining technical artifacts are identified before expensive alignment steps
 
 This quality assessment serves as a checkpoint to catch problems early rather than discovering issues after time-intensive downstream processing.
@@ -303,7 +303,7 @@ Well-performing tick samples typically show:
 #### Computational Considerations
 - **Runtime**: 6-day allocation reflects the computational intensity of aligning millions of reads
 - **Memory requirements**: 45GB accommodates large genome and alignment index in memory
-- **Parallel processing**: 62 simultaneous jobs maximize cluster efficiency
+- **Parallel processing**: 61 simultaneous jobs maximize cluster efficiency
 - **I/O optimization**: Direct output to SAM format minimizes intermediate file handling
 
 The SAM files generated in this step contain the complete alignment information needed for downstream BAM conversion, read group addition, and duplicate removal before variant calling.
@@ -404,7 +404,7 @@ Well-performing tick samples typically show:
 #### Computational Considerations
 - **Memory allocation**: 32GB accommodates large tick genome datasets and sorting operations
 - **Temporary storage**: Uses dedicated temporary directories to avoid I/O conflicts
-- **Parallel processing**: 62 simultaneous conversions maximize cluster efficiency
+- **Parallel processing**: 61 simultaneous conversions maximize cluster efficiency
 - **Quality control**: Multiple verification steps ensure successful file conversion
 
 The sorted BAM files and comprehensive statistics generated in this step provide the foundation for subsequent read group addition and duplicate removal, while the quality metrics enable early identification of problematic samples before proceeding to computationally expensive variant calling steps.
@@ -612,7 +612,7 @@ The deduplicated BAM files generated in this step represent the final, analysis-
 This step consolidates quality metrics from all previous preprocessing steps into a comprehensive summary table that enables systematic evaluation of the entire dataset. Rather than examining individual sample files scattered across multiple directories, this creates a single unified view of preprocessing success across all 61 tick samples plus the negative control. This summary is essential for identifying problematic samples and assessing overall dataset quality before proceeding to computationally expensive variant calling.
 
 #### Biological and Technical Rationale
-After processing 62 samples through 7 preprocessing steps, it's crucial to:
+After processing 61 samples through 7 preprocessing steps, it's crucial to:
 - **Identify outlier samples**: Detect samples with unusual quality metrics that might need special handling
 - **Assess processing uniformity**: Ensure consistent processing success across all samples
 - **Quality gate checkpoint**: Make informed decisions about which samples to include in variant calling
