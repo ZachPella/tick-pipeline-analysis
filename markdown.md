@@ -1349,6 +1349,60 @@ This step completes the technical quality control phase of the pipeline, transfo
 
 ---
 
+### Step 14b: Dataset Characterization via Downsampling
+**Script**: `downsample_to_100k_after_filtering.sh`  
+**Tools**: bcftools, vcflib  
+**Runtime**: 3 days, single job, 50GB memory  
+
+#### Purpose and Context
+This exploratory step randomly downsamples the high-quality variant dataset to approximately 100,000 sites to enable rapid characterization of dataset properties before applying population-level filters. By analyzing a representative subset, we can efficiently evaluate variant quality distributions, allele frequencies, and missingness patterns to inform optimal filtering parameters for Step 15.
+
+#### Technical Implementation
+Uses `vcfrandomsample` with a sampling rate of 0.00037 to achieve approximately 100k variants from the full dataset. This provides a statistically representative sample while dramatically reducing computational requirements for exploratory analysis.
+
+#### Output Structure
+- `100Ksubset_after.cohort_ticks_june2025_snps_filtered_only.vcf.gz` (downsampled variant set)
+
+---
+
+### Step 14c: Population Parameter Optimization Analysis
+**Scripts**: `after_downsample_for_summary_VCF_R_plots.sh` + `VCF_R_100k_plots_before_filtering.sh`  
+**Tools**: VCFtools, R (tidyverse)  
+**Runtime**: 10 hours + 1 hour, statistical analysis and visualization  
+
+#### Purpose and Context
+This step performs comprehensive statistical analysis of the downsampled dataset to characterize variant quality distributions, depth patterns, missingness rates, and allele frequency spectra. The analysis generates publication-quality visualizations and summary statistics that inform optimal filtering thresholds for population-level analysis.
+
+#### Analytical Components
+The analysis pipeline generates multiple key assessments:
+
+**Variant Quality Assessment**: Quality score distributions to evaluate overall variant confidence and identify appropriate quality thresholds.
+
+**Depth Analysis**: Mean depth per site and per individual to assess coverage uniformity and identify optimal depth filtering parameters.
+
+**Missingness Evaluation**: Site-level and individual-level missingness patterns to determine appropriate completeness thresholds.
+
+**Allele Frequency Characterization**: Minor allele frequency spectrum analysis to inform MAF filtering decisions.
+
+**Individual-Level Metrics**: Per-sample depth, missingness, and heterozygosity to identify problematic samples and assess population genetic parameters.
+
+#### Statistical Outputs Generated
+- **Quality distribution plots**: Variant quality score density plots
+- **Depth analysis**: Site and individual depth distributions with summary statistics
+- **Missingness assessment**: Site and individual missingness histograms
+- **MAF spectrum**: Minor allele frequency density plots
+- **Heterozygosity analysis**: Individual inbreeding coefficients and heterozygosity metrics
+
+#### Integration with Population Filtering
+The comprehensive statistics and visualizations from this analysis directly inform the filtering parameter selection in Step 15, ensuring that:
+- MAF thresholds balance variant retention with statistical power
+- Missingness cutoffs maintain data quality while preserving sample representation
+- Depth filters remove outliers while retaining biologically meaningful variation
+
+This data-driven approach to parameter optimization ensures that population-level filtering is tailored to the specific characteristics of the tick dataset rather than relying on generic thresholds.
+
+---
+
 ### Step 15: Population-Level Filtering
 **Script**: `filter_after_genotypegvcfs_04_maf_and_missingness.sh`  
 **Tools**: VCFtools  
