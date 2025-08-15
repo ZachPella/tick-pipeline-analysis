@@ -7,7 +7,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 
-WORKDIR=/work/fauverlab/zachpella/scripts_ticksJune2025/genotyping
+WORKDIR=/work/fauverlab/zachpella/scripts_ticksJune2025_10_scatter/genotyping
 SUBSETVCF=100Ksubset_before.cohort_ticks_june2025_combined
 
 cd ${WORKDIR}
