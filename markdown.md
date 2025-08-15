@@ -25,7 +25,7 @@
 - [Pipeline Completion Summary](#pipeline-completion-summary)
 
 ---
-<img width="801" height="661" alt="pipeline_diagram" src="https://github.com/user-attachments/assets/4ddf628b-959f-4298-affb-d16a32aa3506" />
+<img width="801" height="661" alt="pipeline_diagram drawio" src="https://github.com/user-attachments/assets/d1b1d723-2b63-422e-9e3d-ddd3bbabc094" />
 
 ## Pipeline Overview
 
