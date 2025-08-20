@@ -816,7 +816,7 @@ This step transforms the analysis-ready BAM files into comprehensive variant dat
 ### Step 10: GenomicsDB Consolidation
 **Script**: `variant_02_genomicsdb.sh`  
 **Tools**: GATK4 v4.3 GenomicsDBImport  
-**Runtime**: 8 hours, 10 parallel jobs (one per genomic chunk), 20 CPUs each, 115GB memory  
+**Runtime**: 8 hours, 10 parallel jobs (one per genomic chunk), 2 CPUs each, 115GB memory  
 
 #### Purpose and Context
 This step consolidates the scattered GVCF files from all 61 tick samples into an efficient GenomicsDB workspace that enables scalable joint genotyping. While Step 9 generated 610 individual GVCF chunks (61 samples × 10 chunks each), this step organizes them into 10 GenomicsDB workspaces corresponding to the genomic intervals. This data structure transformation is essential for the efficient joint variant calling that follows.
