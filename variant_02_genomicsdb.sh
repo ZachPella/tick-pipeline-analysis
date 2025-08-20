@@ -8,7 +8,7 @@
 #SBATCH --output=gatk4_genomicsdbimport.%J.out
 #SBATCH --partition=batch
 #SBATCH --array=0-9
-#SBATCH --cpus-per-task=20
+#SBATCH --cpus-per-task=2
 
 module purge
 module load gatk4/4.3
