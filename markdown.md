@@ -1592,16 +1592,16 @@ The analysis uses a two-tool approach optimized for different tasks:
 
 #### Processing Steps and Parameters
 
-**Format conversion with quality control**:
-- `--biallelic-only strict`: Ensures only simple bi-allelic SNPs are included, as PCA requires consistent allelic representation
-- `--const-fid 0`: Sets family IDs to 0 for population samples (not family-based study)
-- `--allow-extra-chr`: Accommodates non-standard chromosome naming in tick reference genome
-- `--make-bed`: Creates binary PLINK format (.bed, .bim, .fam files) for efficient analysis
+**LD Pruning and Variant ID Assignment**:
+- `--vcf`: Specifies the input VCF file
+- `--set-missing-var-ids @:#`: Corrects the critical error from the old pipeline. This command ensures that every variant, even those with a missing ID in the VCF, gets a unique, verifiable ID based on its genomic coordinates.
+- `--indep-pairwise 50 10 0.1`: The core LD pruning parameters. It identifies and removes one of any two variants that are in high linkage disequilibrium (r^2 0.1) within a given sliding window, creating a list of independent variants for the next step.
 
-**PCA computation**:
+**Variant Extraction, Format Conversion, and PCA Computation**:
+- `--extract [prune.in file]`: Uses the list of independent variants generated in the first step
+- `--make-bed`: Creates the binary PLINK format (.bed, .bim, .fam) for the pruned dataset
 - `--pca 20`: Computes the first 20 principal components, providing comprehensive view of population structure
-- Standardized analysis approach compatible with population genetics visualization tools
-- Efficient algorithm suitable for population-scale datasets
+
 
 #### Expected PCA Outcomes and Interpretation
 Principal Component Analysis reveals different aspects of population structure:
