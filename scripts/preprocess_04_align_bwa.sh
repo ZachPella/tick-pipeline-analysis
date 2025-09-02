@@ -6,7 +6,7 @@
 #SBATCH --output=%x_%j.out
 #SBATCH --error=%x_%j.err
 #SBATCH --nodes=1
-#SBATCH --cpus-per-task=4
+#SBATCH --ntasks-per-node=4
 #SBATCH --mem=45G
 #SBATCH --array=1-62
 #SBATCH --partition=batch
